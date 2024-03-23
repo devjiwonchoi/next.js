@@ -1,63 +1,22 @@
-import React from 'react'
 import Loadable from './loadable.shared-runtime'
+import { convertModule } from './lazy-dynamic/loadable'
+import type { ComponentType } from 'react'
+import type {
+  ComponentModule,
+  DynamicOptionsLoadingProps,
+  LazyExoticComponent,
+  Loader,
+  LoaderComponent,
+  LoadableGeneratedOptions,
+  LoaderMap,
+} from './lazy-dynamic/types'
 
 const isServerSide = typeof window === 'undefined'
 
-type ComponentModule<P = {}> = { default: React.ComponentType<P> }
-
-export declare type LoaderComponent<P = {}> = Promise<
-  React.ComponentType<P> | ComponentModule<P>
->
-
-export declare type Loader<P = {}> =
-  | (() => LoaderComponent<P>)
-  | LoaderComponent<P>
-
-export type LoaderMap = { [module: string]: () => Loader<any> }
-
-export type LoadableGeneratedOptions = {
-  webpack?(): any
-  modules?(): LoaderMap
-}
-
-export type DynamicOptionsLoadingProps = {
-  error?: Error | null
-  isLoading?: boolean
-  pastDelay?: boolean
-  retry?: () => void
-  timedOut?: boolean
-}
-
-// Normalize loader to return the module as form { default: Component } for `React.lazy`.
-// Also for backward compatible since next/dynamic allows to resolve a component directly with loader
-// Client component reference proxy need to be converted to a module.
-function convertModule<P>(mod: React.ComponentType<P> | ComponentModule<P>) {
-  return { default: (mod as ComponentModule<P>)?.default || mod }
-}
-
-export type DynamicOptions<P = {}> = LoadableGeneratedOptions & {
-  loading?: (loadingProps: DynamicOptionsLoadingProps) => JSX.Element | null
-  loader?: Loader<P> | LoaderMap
-  loadableGenerated?: LoadableGeneratedOptions
-  ssr?: boolean
-  /**
-   * @deprecated `suspense` prop is not required anymore
-   */
-  suspense?: boolean
-}
-
-export type LoadableOptions<P = {}> = DynamicOptions<P>
-
-export type LoadableFn<P = {}> = (
-  opts: LoadableOptions<P>
-) => React.ComponentType<P>
-
-export type LoadableComponent<P = {}> = React.ComponentType<P>
-
-export function noSSR<P = {}>(
+function noSSR<P = {}>(
   LoadableInitializer: LoadableFn<P>,
   loadableOptions: DynamicOptions<P>
-): React.ComponentType<P> {
+): ComponentType<P> {
   // Removing webpack and modules means react-loadable won't try preloading
   delete loadableOptions.webpack
   delete loadableOptions.modules
@@ -80,12 +39,11 @@ export function noSSR<P = {}>(
  *
  * Read more: [Next.js Docs: `next/dynamic`](https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading#nextdynamic)
  */
-export default function dynamic<P = {}>(
+export default function dynamic<P extends ComponentType<any>>(
   dynamicOptions: DynamicOptions<P> | Loader<P>,
   options?: DynamicOptions<P>
-): React.ComponentType<P> {
-  let loadableFn = Loadable as LoadableFn<P>
-
+): LazyExoticComponent<P> {
+  const loadableFn = Loadable as LoadableFn<P>
   let loadableOptions: LoadableOptions<P> = {
     // A loading component is not required, so we default it
     loading: ({ error, isLoading, pastDelay }) => {
@@ -145,8 +103,33 @@ export default function dynamic<P = {}>(
     delete loadableOptions.webpack
     delete loadableOptions.modules
 
-    return noSSR(loadableFn, loadableOptions)
+    return noSSR(loadableFn, loadableOptions) as LazyExoticComponent<P>
   }
 
-  return loadableFn({ ...loadableOptions, loader: loader as Loader<P> })
+  return loadableFn({
+    ...loadableOptions,
+    loader: loader as Loader<P>,
+  }) as LazyExoticComponent<P>
+}
+
+export type DynamicOptions<P = {}> = LoadableGeneratedOptions & {
+  loading?: (loadingProps: DynamicOptionsLoadingProps) => JSX.Element | null
+  loader?: Loader<P> | LoaderMap
+  loadableGenerated?: LoadableGeneratedOptions
+  ssr?: boolean
+  /**
+   * @deprecated `suspense` prop is not required anymore
+   */
+  suspense?: boolean
+}
+export type LoadableOptions<P = {}> = DynamicOptions<P>
+export type LoadableFn<P = {}> = (opts: LoadableOptions<P>) => ComponentType<P>
+export type LoadableComponent<P = {}> = ComponentType<P>
+export type {
+  ComponentModule,
+  DynamicOptionsLoadingProps,
+  Loader,
+  LoaderComponent,
+  LoadableGeneratedOptions,
+  LoaderMap,
 }

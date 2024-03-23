@@ -20,3 +20,14 @@ export type DynamicOptionsLoadingProps = {
   retry?: () => void
   timedOut?: boolean
 }
+
+interface ExoticComponent<P = {}> {
+  /**
+   * **NOTE**: Exotic components are not callable.
+   */
+  (props: P): React.ReactNode
+  readonly $$typeof: symbol
+}
+
+export type LazyExoticComponent<T extends React.ComponentType<any>> =
+  ExoticComponent<T>

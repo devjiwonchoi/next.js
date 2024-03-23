@@ -5,7 +5,7 @@ import type { ComponentModule } from './types'
 // Normalize loader to return the module as form { default: Component } for `React.lazy`.
 // Also for backward compatible since next/dynamic allows to resolve a component directly with loader
 // Client component reference proxy need to be converted to a module.
-function convertModule<P>(
+export function convertModule<P>(
   mod: React.ComponentType<P> | ComponentModule<P> | undefined
 ): {
   default: React.ComponentType<P>
