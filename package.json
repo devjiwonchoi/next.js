@@ -79,7 +79,8 @@
     "test-storybook": "turbo run test-storybook",
     "with-rspack": "cross-env NEXT_RSPACK=1 NEXT_TEST_USE_RSPACK=1",
     "ci:version-canary": "changeset version && pnpm install --no-frozen-lockfile",
-    "ci:version-stable": "node ./scripts/version-stable.js",
+    "ci:version-patch-minor": "node ./scripts/version-patch-minor.js",
+    "ci:version-major": "node ./scripts/version-major.js",
     "ci:publish": "turbo run build && changeset publish"
   },
   "devDependencies": {

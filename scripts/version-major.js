@@ -2,7 +2,7 @@ const execa = require('execa')
 
 async function main() {
   try {
-    console.log('Starting version-stable script...')
+    console.log('Starting version-patch-minor script...')
 
     // Exit pre mode if we're in it
     console.log('Exiting pre mode...')
