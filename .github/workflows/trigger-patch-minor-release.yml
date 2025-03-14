@@ -1,27 +1,11 @@
-name: Trigger Release
+name: Trigger Patch/Minor Release
 
 on:
   workflow_dispatch:
-    inputs:
-      releaseType:
-        description: stable, canary, or release candidate?
-        required: true
-        type: choice
-        options:
-          - canary
-          - stable
-          - release-candidate
-
-      semverType:
-        description: semver type?
-        type: choice
-        options:
-          - patch/minor
-          - major
 
 jobs:
   release:
-    name: Trigger Release
+    name: Trigger Patch/Minor Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
