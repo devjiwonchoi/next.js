@@ -6,13 +6,7 @@ const log = (...args) => {
 
 async function main() {
   try {
-    log('Starting version-stable script...')
-
-    // Exit pre mode if we're in it
-    log('Exiting pre mode...')
-    await execa('pnpm', ['changeset', 'pre', 'exit'], {
-      stdio: 'inherit',
-    })
+    log('Starting version-canary script...')
 
     // Version packages
     log('Versioning packages...')
@@ -28,13 +22,15 @@ async function main() {
       stdio: 'inherit',
     })
 
-    // Enter canary pre mode
-    log('Entering canary pre mode...')
-    await execa('pnpm', ['changeset', 'pre', 'enter', 'canary'], {
-      stdio: 'inherit',
-    })
+    // Push changes to canary branch
+    log('Pushing changes to canary branch...')
+    await execa('git', ['config', 'user.name', 'vercel-release-bot'])
+    await execa('git', ['config', 'user.email', 'infra+release@vercel.com'])
+    await execa('git', ['add', '.'])
+    await execa('git', ['commit', '-m', '[repo] version packages to canary'])
+    await execa('git', ['push', 'origin', 'HEAD:canary'])
 
-    log('Stable release process completed successfully!')
+    log('Canary release process completed successfully!')
   } catch (error) {
     console.error('Error during release process:', error)
     process.exit(1)
