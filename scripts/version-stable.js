@@ -16,9 +16,11 @@ async function main() {
       stdio: 'inherit',
     })
 
-    // Install dependencies
-    console.log('Installing dependencies...')
-    await execa('pnpm', ['install'], {
+    // Update lockfile
+    console.log('Updating lockfile...')
+    // --frozen-lockfile is enabled by default in CI, so explicitly
+    // disable it.
+    await execa('pnpm', ['install', '--no-frozen-lockfile'], {
       stdio: 'inherit',
     })
 
