@@ -2,6 +2,8 @@ const execa = require('execa')
 
 async function main() {
   try {
+    console.log('Starting version-stable script...')
+
     // Exit pre mode if we're in it
     console.log('Exiting pre mode...')
     await execa('pnpm', ['changeset', 'pre', 'exit'], {
