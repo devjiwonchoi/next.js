@@ -62,9 +62,8 @@ export function io(): Promise<void> {
           '`io()`'
         )
       case 'prerender-ppr':
-        // Dead code to be removed when we eliminate legacy ppr code
-        throwPrerenderPPRRemovedError()
-        break
+        // Kept as a dead-code sentinel until PrerenderStorePPR is removed.
+        return throwPrerenderPPRRemovedError()
       case 'cache':
       case 'private-cache':
       case 'unstable-cache':

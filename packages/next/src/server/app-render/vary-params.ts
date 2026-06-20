@@ -1,6 +1,9 @@
 import type { Params } from '../request/params'
 import type { SearchParams } from '../request/search-params'
-import { workUnitAsyncStorage } from './work-unit-async-storage.external'
+import {
+  throwPrerenderPPRRemovedError,
+  workUnitAsyncStorage,
+} from './work-unit-async-storage.external'
 import type {
   VaryParamsThenable,
   VaryParams,
@@ -128,6 +131,7 @@ export function createVaryParamsAccumulator(): VaryParamsAccumulator | null {
         return null
       }
       case 'prerender-ppr':
+        return throwPrerenderPPRRemovedError()
       case 'prerender-legacy':
       case 'cache':
       case 'private-cache':
@@ -157,6 +161,7 @@ export function getMetadataVaryParamsAccumulator(): VaryParamsAccumulator | null
         return null
       }
       case 'prerender-ppr':
+        return throwPrerenderPPRRemovedError()
       case 'prerender-legacy':
       case 'cache':
       case 'private-cache':
@@ -204,6 +209,7 @@ export function getRootParamsVaryParamsAccumulator(): VaryParamsAccumulator | nu
         return null
       }
       case 'prerender-ppr':
+        return throwPrerenderPPRRemovedError()
       case 'prerender-legacy':
       case 'request':
       case 'cache':

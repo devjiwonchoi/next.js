@@ -29,6 +29,7 @@ import type {
 import {
   getHmrRefreshHash,
   getResumeDataCache,
+  throwPrerenderPPRRemovedError,
   workUnitAsyncStorage,
   getDraftModeProviderForCacheScope,
   getCacheSignal,
@@ -79,7 +80,6 @@ import {
 } from './use-cache-errors'
 import {
   createHangingInputAbortSignal,
-  postponeWithTracking,
   throwToInterruptStaticGeneration,
 } from '../app-render/dynamic-rendering'
 import {
@@ -680,9 +680,10 @@ function createUseCacheStore(
       case 'request':
         useCacheOrRequestStore = outerWorkUnitStore
         break
+      case 'prerender-ppr':
+        return throwPrerenderPPRRemovedError()
       case 'prerender-runtime':
       case 'prerender':
-      case 'prerender-ppr':
       case 'prerender-legacy':
       case 'unstable-cache':
       case 'generate-static-params':
@@ -739,10 +740,11 @@ function captureOuterOwnerStack(
     case 'private-cache':
       parentOuterOwnerStack = workUnitStore.outerOwnerStack
       break
+    case 'prerender-ppr':
+      return throwPrerenderPPRRemovedError()
     case 'unstable-cache':
     case 'request':
     case 'prerender':
-    case 'prerender-ppr':
     case 'prerender-legacy':
     case 'prerender-runtime':
     case 'prerender-client':
@@ -891,6 +893,8 @@ function propagateCacheEntryMetadata(
     }
   } else {
     switch (cacheContext.outerWorkUnitStore.type) {
+      case 'prerender-ppr':
+        return throwPrerenderPPRRemovedError()
       case 'cache':
         if (metadata.readRootParamNames) {
           for (const paramName of metadata.readRootParamNames) {
@@ -912,7 +916,6 @@ function propagateCacheEntryMetadata(
       case 'private-cache':
       case 'prerender':
       case 'prerender-runtime':
-      case 'prerender-ppr':
       case 'prerender-legacy':
         propagateCacheLifeAndTagsToRevalidateStore(
           cacheContext.outerWorkUnitStore,
@@ -978,10 +981,10 @@ function maybePropagateCacheEntryMetadata(
     case 'cache':
     case 'unstable-cache':
     case 'prerender-legacy':
-    case 'prerender-ppr': {
       propagateCacheEntryMetadata(cacheContext, metadata)
       break
-    }
+    case 'prerender-ppr':
+      return throwPrerenderPPRRemovedError()
     case 'generate-static-params':
       break
     default: {
@@ -1209,6 +1212,7 @@ async function generateCacheEntryImpl(
                   })
                   break
                 case 'prerender-ppr':
+                  return throwPrerenderPPRRemovedError()
                 case 'prerender-legacy':
                 case 'request':
                 case 'cache':
@@ -1262,6 +1266,8 @@ async function generateCacheEntryImpl(
   let devTimeoutAbortController: AbortController | undefined
 
   switch (outerWorkUnitStore.type) {
+    case 'prerender-ppr':
+      return throwPrerenderPPRRemovedError()
     case 'prerender-runtime':
     case 'prerender':
       const timeoutAbortController = new AbortController()
@@ -1464,7 +1470,6 @@ async function generateCacheEntryImpl(
         }
       }
     // fallthrough
-    case 'prerender-ppr':
     case 'prerender-legacy':
     case 'cache':
     case 'private-cache':
@@ -1704,11 +1709,7 @@ export async function cache(
           expression
         )
       case 'prerender-ppr':
-        return postponeWithTracking(
-          workStore.route,
-          expression,
-          workUnitStore.dynamicTracking
-        )
+        return throwPrerenderPPRRemovedError()
       case 'prerender-legacy':
         return throwToInterruptStaticGeneration(
           expression,
@@ -1794,9 +1795,10 @@ export async function cache(
         }
         break
       }
+      case 'prerender-ppr':
+        return throwPrerenderPPRRemovedError()
       case 'prerender':
       case 'prerender-runtime':
-      case 'prerender-ppr':
       case 'prerender-legacy':
       case 'request':
       case 'private-cache':
@@ -2052,7 +2054,6 @@ export async function cache(
         break
       }
     // fallthrough
-    case 'prerender-ppr':
     case 'prerender-legacy':
     case 'request':
     // TODO(restart-on-cache-miss): We need to handle params/searchParams on page components.
@@ -2191,7 +2192,6 @@ export async function cache(
             workStore.route,
             'dynamic "use cache"'
           )
-        case 'prerender-ppr':
         case 'prerender-legacy':
         case 'request':
         case 'cache':
@@ -2346,7 +2346,6 @@ export async function cache(
               }
               break
             }
-            case 'prerender-ppr':
             case 'prerender-legacy':
             case 'cache':
             case 'private-cache':
@@ -2400,7 +2399,6 @@ export async function cache(
               }
               break
             }
-            case 'prerender-ppr':
             case 'prerender-legacy':
             case 'cache':
             case 'private-cache':
@@ -2447,7 +2445,6 @@ export async function cache(
             case 'cache':
             case 'private-cache':
             case 'prerender-legacy':
-            case 'prerender-ppr':
             case 'generate-static-params': {
               break
             }
@@ -2553,7 +2550,6 @@ export async function cache(
             )
           }
           break
-        case 'prerender-ppr':
         case 'prerender-legacy':
         case 'request':
         case 'cache':
@@ -2916,7 +2912,6 @@ export async function cache(
               break
             }
             case 'prerender-runtime':
-            case 'prerender-ppr':
             case 'prerender-legacy':
             case 'cache':
             case 'private-cache':
@@ -2952,7 +2947,6 @@ export async function cache(
             }
             case 'prerender':
             case 'prerender-runtime':
-            case 'prerender-ppr':
             case 'prerender-legacy':
             case 'cache':
             case 'private-cache':
@@ -3294,11 +3288,12 @@ function shouldForceRevalidate(
       case 'cache':
       case 'private-cache':
         return workUnitStore.forceRevalidate
+      case 'prerender-ppr':
+        return throwPrerenderPPRRemovedError()
       case 'prerender-runtime':
       case 'prerender':
       case 'prerender-client':
       case 'validation-client':
-      case 'prerender-ppr':
       case 'prerender-legacy':
       case 'unstable-cache':
       case 'generate-static-params':
@@ -3339,10 +3334,11 @@ function shouldDiscardCacheEntry(
   switch (workUnitStore.type) {
     case 'prerender':
       return false
+    case 'prerender-ppr':
+      return throwPrerenderPPRRemovedError()
     case 'prerender-runtime':
     case 'prerender-client':
     case 'validation-client':
-    case 'prerender-ppr':
     case 'prerender-legacy':
     case 'request':
     case 'cache':

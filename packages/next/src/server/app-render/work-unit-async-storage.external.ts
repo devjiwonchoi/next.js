@@ -20,6 +20,7 @@ import type { ImplicitTags } from '../lib/implicit-tags'
 import type { WorkStore } from './work-async-storage.external'
 import { NEXT_HMR_REFRESH_HASH_COOKIE } from '../../client/components/app-router-headers'
 import { InvariantError } from '../../shared/lib/invariant-error'
+import { throwPrerenderPPRRemovedError } from '../../shared/lib/ppr-removed-error'
 import type { StagedRenderingController } from './staged-rendering'
 import { isEarlyRenderStage, RenderStage } from './staged-rendering'
 import type { ValidationBoundaryTracking } from './instant-validation/boundary-tracking'
@@ -423,6 +424,7 @@ export type WorkUnitStore =
 export type WorkUnitAsyncStorage = AsyncLocalStorage<WorkUnitStore>
 
 export { workUnitAsyncStorageInstance as workUnitAsyncStorage }
+export { throwPrerenderPPRRemovedError }
 
 export function throwForMissingRequestStore(callingExpression: string): never {
   throw new Error(
@@ -448,8 +450,9 @@ export function getResumeDataCache(
     case 'prerender-runtime':
     case 'prerender-client':
     case 'validation-client':
-    case 'prerender-ppr':
       return workUnitStore.resumeDataCache
+    case 'prerender-ppr':
+      return throwPrerenderPPRRemovedError()
     case 'cache':
     case 'private-cache':
     case 'unstable-cache':
@@ -473,9 +476,10 @@ export function getHmrRefreshHash(
         return workUnitStore.hmrRefreshHash
       case 'request':
         return workUnitStore.cookies.get(NEXT_HMR_REFRESH_HASH_COOKIE)?.value
+      case 'prerender-ppr':
+        return throwPrerenderPPRRemovedError()
       case 'prerender-client':
       case 'validation-client':
-      case 'prerender-ppr':
       case 'prerender-legacy':
       case 'unstable-cache':
       case 'generate-static-params':
@@ -495,11 +499,12 @@ export function isHmrRefresh(workUnitStore: WorkUnitStore): boolean {
       case 'private-cache':
       case 'request':
         return workUnitStore.isHmrRefresh ?? false
+      case 'prerender-ppr':
+        return throwPrerenderPPRRemovedError()
       case 'prerender':
       case 'prerender-client':
       case 'validation-client':
       case 'prerender-runtime':
-      case 'prerender-ppr':
       case 'prerender-legacy':
       case 'unstable-cache':
       case 'generate-static-params':
@@ -521,11 +526,12 @@ export function getServerComponentsHmrCache(
       case 'private-cache':
       case 'request':
         return workUnitStore.serverComponentsHmrCache
+      case 'prerender-ppr':
+        return throwPrerenderPPRRemovedError()
       case 'prerender':
       case 'prerender-client':
       case 'validation-client':
       case 'prerender-runtime':
-      case 'prerender-ppr':
       case 'prerender-legacy':
       case 'unstable-cache':
       case 'generate-static-params':
@@ -553,10 +559,11 @@ export function getDraftModeProviderForCacheScope(
       case 'prerender-runtime':
       case 'request':
         return workUnitStore.draftMode
+      case 'prerender-ppr':
+        return throwPrerenderPPRRemovedError()
       case 'prerender':
       case 'prerender-client':
       case 'validation-client':
-      case 'prerender-ppr':
       case 'prerender-legacy':
       case 'generate-static-params':
         break
@@ -576,9 +583,10 @@ export function getStagedRenderingController(
     case 'prerender-runtime':
     case 'prerender':
       return workUnitStore.stagedRendering ?? null
+    case 'prerender-ppr':
+      return throwPrerenderPPRRemovedError()
     case 'prerender-client':
     case 'validation-client':
-    case 'prerender-ppr':
     case 'prerender-legacy':
     case 'cache':
     case 'private-cache':
@@ -599,6 +607,8 @@ export function getCacheSignal(
     case 'validation-client':
     case 'prerender-runtime':
       return workUnitStore.cacheSignal
+    case 'prerender-ppr':
+      return throwPrerenderPPRRemovedError()
     case 'request': {
       // In dev, we might fill caches even during a dynamic request.
       if (workUnitStore.cacheSignal) {
@@ -606,7 +616,6 @@ export function getCacheSignal(
       }
       // fallthrough
     }
-    case 'prerender-ppr':
     case 'prerender-legacy':
     case 'cache':
     case 'private-cache':
