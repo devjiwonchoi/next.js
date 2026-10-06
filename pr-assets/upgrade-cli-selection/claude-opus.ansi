@@ -1,0 +1,59 @@
+▲ old-app / npx next@canary upgrade --agent=latest
+  Upgrade: Next.js 15.5.27 → 16.3.8
+[37m[1m [22m[39m [2mLooking for coding agents...[22m
+
+  Multiple coding agents detected. Which one would you like to use?
+  [2mUse ↑/↓ to choose, Enter to confirm, or Esc to cancel.[22m
+
+[?25l  [36m❯[39m [36m[1mContinue with Codex[22m[39m
+    Continue with Claude Code
+    Copy prompt for another coding agent[2K[1A[2K[1A[2K[G    Continue with Codex
+  [36m❯[39m [36m[1mContinue with Claude Code[22m[39m
+    Copy prompt for another coding agent[2K[1A[2K[1A[2K[G[?25h  [36m❯[39m [36m[1mContinue with Claude Code[22m[39m
+
+  Which Claude Code model should run the upgrade?
+  [2mUse ↑/↓ to choose, Enter to confirm, or Esc to go back.[22m
+
+[?25l  [36m❯[39m [36m[1mClaude Sonnet 5 (1M)[22m[39m
+    Claude Opus (latest)
+    Claude Fable (latest)[2K[1A[2K[1A[2K[G    Claude Sonnet 5 (1M)
+  [36m❯[39m [36m[1mClaude Opus (latest)[22m[39m
+    Claude Fable (latest)[2K[1A[2K[1A[2K[G[?25h  [36m❯[39m [36m[1mClaude Opus (latest)[22m[39m
+
+  Which reasoning effort should the upgrade use?
+  [2mUse ↑/↓ to choose, Enter to confirm, or Esc to go back.[22m
+
+[?25l  [36m❯[39m [36m[1mModel default[22m[39m
+    low
+    medium
+    high
+    max[2K[1A[2K[1A[2K[1A[2K[1A[2K[G    Model default
+  [36m❯[39m [36m[1mlow[22m[39m
+    medium
+    high
+    max[2K[1A[2K[1A[2K[1A[2K[1A[2K[G    Model default
+    low
+  [36m❯[39m [36m[1mmedium[22m[39m
+    high
+    max[2K[1A[2K[1A[2K[1A[2K[1A[2K[G    Model default
+    low
+    medium
+  [36m❯[39m [36m[1mhigh[22m[39m
+    max[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[?25h  [36m❯[39m [36m[1mhigh[22m[39m
+
+  Use Auto permission mode for Claude Code?
+  [2mUse ↑/↓ to choose, Enter to confirm, or Esc to go back.[22m
+
+[?25l  [36m❯[39m [36m[1mYes[22m[39m
+    No, ask for approval[2K[1A[2K[G    Yes
+  [36m❯[39m [36m[1mNo, ask for approval[22m[39m[2K[1A[2K[G[?25h  [36m❯[39m [36m[1mNo, ask for approval[22m[39m
+
+  Open the upgrade in a separate Git worktree?
+  [2mUse ↑/↓ to choose, Enter to confirm, or Esc to go back.[22m
+
+[?25l  [36m❯[39m [36m[1mYes[22m[39m
+    No[2K[1A[2K[G    Yes
+  [36m❯[39m [36m[1mNo[22m[39m[2K[1A[2K[G[?25h  [36m❯[39m [36m[1mNo[22m[39m
+  Continuing with [36m[1mClaude Code[22m[39m...
+
+  Preview complete.

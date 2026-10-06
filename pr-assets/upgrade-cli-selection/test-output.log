@@ -1,0 +1,66 @@
+PASS test/unit/agentic-upgrade-prompts.test.ts
+  agentic upgrade prompts
+    ✓ uses the pinned CLI without looking up canary again (13 ms)
+    ✓ rejects a worker running a different CLI version (6 ms)
+    ✓ reuses the current canary after checking npm with legacy guard undefined (12 ms)
+    ✓ reuses the current canary after checking npm with legacy guard 1 (2 ms)
+    ✓ delegates true to the exact canary and preserves its failure status (3 ms)
+    ✓ delegates security to the exact canary and preserves its failure status (3 ms)
+    ✓ delegates latest to the exact canary and preserves its failure status (1 ms)
+    ✓ delegates experimental-future to the exact canary and preserves its failure status (1 ms)
+    ✓ stops before upgrading on HTTP error (5 ms)
+    ✓ stops before upgrading on network error (3 ms)
+    ✓ stops before upgrading on timeout (1 ms)
+    ✓ stops before upgrading on invalid JSON (5 ms)
+    ✓ stops before upgrading on missing version (3 ms)
+    ✓ stops before upgrading on invalid version (1 ms)
+    ✓ uses the planned multiple-agent question and choices (6 ms)
+    ✓ uses the planned single-agent question
+    ✓ passes selected codex model gpt-5.6-terra and effort ultra (6 ms)
+    ✓ passes selected codex model gpt-5.6-sol and effort max (6 ms)
+    ✓ passes selected codex model gpt-6-astra and effort high (1 ms)
+    ✓ passes selected claude model claude-sonnet-5[1m] and effort high (2 ms)
+    ✓ passes selected claude model opus and effort max (3 ms)
+    ✓ passes selected claude model fable and effort medium (5 ms)
+    ✓ uses the selected model default when no effort override is chosen (1 ms)
+    ✓ omits Astra when the selected Codex catalog does not contain it (3 ms)
+    ✓ uses Codex defaults when the model catalog is unavailable
+    ✓ uses Codex defaults when the model catalog is invalid JSON
+    ✓ uses Codex defaults when the model catalog is unexpected format (3 ms)
+    ✓ uses Codex defaults when the model catalog is empty
+    ✓ preserves unexpected agent probe errors as the cause (2 ms)
+    ✓ passes codex yes permission flags (3 ms)
+    ✓ passes codex no permission flags (1 ms)
+    ✓ passes claude yes permission flags
+    ✓ passes claude no permission flags
+    ✓ defaults to approval requests when the Codex CLI lacks Auto review (2 ms)
+    ✓ uses explicit approval mode when the Claude CLI lacks Auto mode (1 ms)
+    ✓ cancels the handoff when Ctrl+C is pressed at permission selection (16 ms)
+    ✓ goes back through worktree, permission, effort, and model before launching (1 ms)
+    ✓ defaults to the selected model when the previous effort is unavailable (1 ms)
+    ✓ reuses Claude permission support after going back (1 ms)
+    ✓ returns from worktree to effort when Auto mode is unavailable
+    ✓ uses the existing agent settings without prompting interactively
+    ✓ passes the accepted worktree choice to the prompt factory (1 ms)
+    ✓ leaves the worktree choice open outside a TTY (4 ms)
+    ✓ passes the complete migration prompt to an existing agent (3 ms)
+    ✓ renders verbose codemod instructions in the guide (1 ms)
+    ✓ defaults a bare agent upgrade to security
+    ✓ uses the configured security policy for a bare agent upgrade (5 ms)
+    ✓ uses the configured latest policy for a bare agent upgrade
+    ✓ uses the configured experimental-future policy for a bare agent upgrade (1 ms)
+    ✓ passes the latest target to the existing agent (5 ms)
+    ✓ uses the same-major guide for a security update (1 ms)
+    ✓ uses the different-major guide for a latest update (1 ms)
+    ✓ adds the Future Defaults guide after a different-major update
+    ✓ hands off the exact canary target for latest upgrades
+    ✓ hands off the exact canary target for experimental-future upgrades
+    ✓ names the stable target in a prerelease latest upgrade handoff
+    ✓ adds the Future Defaults guide after a same-major update (6 ms)
+    ✓ uses only the Future Defaults guide when the version is unchanged (11 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       58 passed, 58 total
+Snapshots:   5 passed, 5 total
+Time:        1.207 s
+Ran all test suites.

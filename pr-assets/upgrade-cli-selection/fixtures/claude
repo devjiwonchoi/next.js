@@ -1,0 +1,5 @@
+#!/bin/sh
+case "$1" in
+  --help) printf '%s\n' '  --permission-mode <mode> Permission mode (choices: "auto", "manual")' ;;
+  *) printf '%s\n' '  Preview complete.' ;;
+esac
