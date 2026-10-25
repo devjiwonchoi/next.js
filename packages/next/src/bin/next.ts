@@ -664,6 +664,12 @@ program
       'Upgrade with an agent to security, latest, or experimental-future. Defaults to security.'
     ).conflicts('revision')
   )
+  .addOption(
+    new Option(
+      '--ci [agent]',
+      'Add a GitHub Actions workflow that upgrades with claude or codex every week. Detects the agent when omitted.'
+    ).conflicts('revision')
+  )
   // Keep nudge attribution available to agents without exposing it in public help.
   .addOption(new Option('--internal-nudge-id <id>').hideHelp())
   .action(async (directory, options) => {

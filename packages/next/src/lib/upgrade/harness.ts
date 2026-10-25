@@ -20,7 +20,7 @@ const CODEX_APPROVAL_ARGS = [
   'on-request',
 ] as const
 
-type UpgradeHarness = {
+export type UpgradeHarness = {
   name: 'codex' | 'claude'
   path: string
 }
@@ -34,7 +34,7 @@ function resolvePrompt(
   return typeof prompt === 'string' ? prompt : prompt(useWorktree)
 }
 
-async function chooseOption(
+export async function chooseOption(
   question: string,
   values: Record<string, string>,
   defaultValue: number,
@@ -96,7 +96,7 @@ async function chooseWorktree(): Promise<boolean | null | undefined> {
   throw new Error(`Unknown worktree choice: ${choice}`)
 }
 
-function getHarnessDisplayName(name: UpgradeHarness['name']): string {
+export function getHarnessDisplayName(name: UpgradeHarness['name']): string {
   return name === 'codex' ? 'Codex' : 'Claude Code'
 }
 
@@ -132,7 +132,7 @@ function getClaudePermissionSupport(path: string) {
   }
 }
 
-async function findHarnesses(): Promise<UpgradeHarness[]> {
+export async function findHarnesses(): Promise<UpgradeHarness[]> {
   const names: UpgradeHarness['name'][] = ['codex', 'claude']
   const directories = (process.env.PATH ?? '').split(delimiter).filter(Boolean)
   const extensions =

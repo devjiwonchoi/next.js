@@ -38,6 +38,7 @@ type NextUpgradeOptions = {
   revision: string
   verbose: boolean
   agent: boolean | string | undefined
+  ci?: boolean | string
 }
 
 const UUID_PATTERN =
@@ -156,6 +157,44 @@ export async function spawnNextUpgrade(
   nudgeSource: { id: string; recipient: 'human' | 'agent' } | null
 ) {
   let baseDir = resolvePath(directory || '.')
+
+  if (options.ci) {
+    try {
+      // The workflow runs `next upgrade --agent`, which reads the app's policy at
+      // run time. Only an explicit `--agent=<type>` is written into the workflow.
+      const policy = typeof options.agent === 'string' ? options.agent : null
+      if (
+        policy !== null &&
+        policy !== 'security' &&
+        policy !== 'latest' &&
+        policy !== 'experimental-future'
+      ) {
+        throw new Error(
+          `Unsupported agent upgrade type ${JSON.stringify(policy)}. Expected "security", "latest", or "experimental-future".`
+        )
+      }
+
+      baseDir = getProjectDir(directory)
+      // A workspace root must not get a workflow for an unspecified app.
+      if (!findDir(baseDir, 'app') && !findDir(baseDir, 'pages')) {
+        throw new Error(
+          'No Next.js app found in this directory. Run the command from an app directory or pass its path:\n\n' +
+            'next upgrade [directory] --ci'
+        )
+      }
+
+      const { setupUpgradeCI } =
+        require('../lib/upgrade/ci') as typeof import('../lib/upgrade/ci')
+      await setupUpgradeCI(baseDir, { agent: options.ci, policy })
+    } catch (error) {
+      Log.error(
+        'Could not set up the upgrade workflow:',
+        error instanceof Error ? error.message : error
+      )
+      process.exitCode = 1
+    }
+    return
+  }
 
   if (options.agent) {
     // Match dev/build's telemetry storage, including custom output directories in CI.
